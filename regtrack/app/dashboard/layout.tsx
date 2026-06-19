@@ -2,14 +2,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import DashboardNav from '@/components/dashboard/DashboardNav'
 
-export default async function DashboardLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: Record<string, string>
-}) {
-  const supabase = createServerSupabaseClient()
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
@@ -20,11 +14,7 @@ export default async function DashboardLayout({
 
   return (
     <div style={{ minHeight: '100vh', background: '#F5F8FC', fontFamily: 'Inter, system-ui, sans-serif' }}>
-      <DashboardNav
-        profile={profile}
-        companies={companies || []}
-        activeCompanyId={null}
-      />
+      <DashboardNav profile={profile} companies={companies || []} activeCompanyId={null} />
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
         {children}
       </main>

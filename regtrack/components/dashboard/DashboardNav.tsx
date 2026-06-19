@@ -109,6 +109,16 @@ export default function DashboardNav({ profile, companies, activeCompanyId }: Pr
           Overview
         </Link>
 
+        {/* Settings link */}
+        <Link href="/dashboard/settings" style={{
+          textDecoration: "none", fontSize: 14, fontWeight: 500,
+          padding: "6px 12px", borderRadius: 7,
+          color: pathname === "/dashboard/settings" ? "#0C2340" : "#6b7c93",
+          background: pathname === "/dashboard/settings" ? "#EEF4FB" : "transparent",
+        }}>
+          Settings
+        </Link>
+
         {/* Fleet dropdown */}
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <button
