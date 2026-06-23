@@ -14,11 +14,7 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    full_name: '',
-    company_name: '',
-    email: '',
-    password: '',
-    confirm_password: '',
+    full_name: '', company_name: '', email: '', password: '', confirm_password: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -55,16 +51,6 @@ export default function SignupPage() {
       return
     }
 
-    // Update profile with company name if provided
-    if (form.company_name) {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        await supabase.from('profiles')
-          .update({ company_name: form.company_name })
-          .eq('id', user.id)
-      }
-    }
-
     toast.success('Account created! Check your email to confirm.')
     router.push('/auth/login?message=check-email')
     setLoading(false)
@@ -72,50 +58,34 @@ export default function SignupPage() {
 
   return (
     <AuthCard
-      title="Create your account"
-      subtitle="Start tracking your fleet registrations today."
+      title="Start your free 7-day trial"
+      subtitle="No credit card required. Full access for 7 days."
     >
-      <form onSubmit={handleSubmit}>
-        <FormField
-          label="Full name" id="full_name" value={form.full_name}
-          onChange={set('full_name')} placeholder="Maria Santos"
-          autoComplete="name" required error={errors.full_name}
-        />
-        <FormField
-          label="Company name" id="company_name" value={form.company_name}
-          onChange={set('company_name')} placeholder="Santos Transport (optional)"
-          autoComplete="organization"
-        />
-        <FormField
-          label="Email address" id="email" type="email" value={form.email}
-          onChange={set('email')} placeholder="maria@example.com"
-          autoComplete="email" required error={errors.email}
-        />
-        <FormField
-          label="Password" id="password" type="password" value={form.password}
-          onChange={set('password')} placeholder="Min. 8 characters"
-          autoComplete="new-password" required error={errors.password}
-          hint="At least 8 characters"
-        />
-        <FormField
-          label="Confirm password" id="confirm_password" type="password"
-          value={form.confirm_password} onChange={set('confirm_password')}
-          placeholder="Re-enter your password"
-          autoComplete="new-password" required error={errors.confirm_password}
-        />
+      {/* Trial badge */}
+      <div style={{ background: '#EAF3DE', border: '1px solid #C5E0A0', borderRadius: 8, padding: '10px 14px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontSize: 16 }}>🎉</span>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#3B6D11' }}>7-day free trial</div>
+          <div style={{ fontSize: 12, color: '#5A8A2A' }}>Full access • No credit card • Cancel anytime</div>
+        </div>
+      </div>
 
-        <SubmitButton loading={loading} label="Create account" loadingLabel="Creating account…" />
+      <form onSubmit={handleSubmit}>
+        <FormField label="Full name" id="full_name" value={form.full_name} onChange={set('full_name')} placeholder="Maria Santos" autoComplete="name" required error={errors.full_name} />
+        <FormField label="Company name" id="company_name" value={form.company_name} onChange={set('company_name')} placeholder="Santos Transport (optional)" autoComplete="organization" />
+        <FormField label="Email address" id="email" type="email" value={form.email} onChange={set('email')} placeholder="maria@example.com" autoComplete="email" required error={errors.email} />
+        <FormField label="Password" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Min. 8 characters" autoComplete="new-password" required error={errors.password} hint="At least 8 characters" />
+        <FormField label="Confirm password" id="confirm_password" type="password" value={form.confirm_password} onChange={set('confirm_password')} placeholder="Re-enter your password" autoComplete="new-password" required error={errors.confirm_password} />
+
+        <SubmitButton loading={loading} label="Start free trial" loadingLabel="Creating account…" />
       </form>
 
       <p style={{ textAlign: 'center', fontSize: 13, color: '#6b7c93', marginTop: 20 }}>
         Already have an account?{' '}
-        <Link href="/auth/login" style={{ color: 'var(--blue)', fontWeight: 500, textDecoration: 'none' }}>
-          Sign in
-        </Link>
+        <Link href="/auth/login" style={{ color: 'var(--blue)', fontWeight: 500, textDecoration: 'none' }}>Sign in</Link>
       </p>
-
-      <p style={{ fontSize: 11, color: '#9aabc0', textAlign: 'center', marginTop: 16, lineHeight: 1.5 }}>
-        By creating an account you agree to our terms of service and privacy policy.
+      <p style={{ fontSize: 11, color: '#9aabc0', textAlign: 'center', marginTop: 12, lineHeight: 1.5 }}>
+        By creating an account you agree to our terms of service. One free trial per email address.
       </p>
     </AuthCard>
   )
