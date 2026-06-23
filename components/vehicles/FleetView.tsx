@@ -22,10 +22,10 @@ type VehicleTab = VehicleType | 'all'
 type SortKey = 'fleet_number' | 'make' | 'year' | 'expiry' | 'status'
 
 const VEHICLE_TABS: { type: VehicleTab; label: string; icon: string }[] = [
-  { type: 'all',     label: 'All',      icon: '🚘' },
-  { type: 'car',     label: 'Cars',     icon: '🚗' },
-  { type: 'truck',   label: 'Trucks',   icon: '🛻' },
-  { type: 'trailer', label: 'Trailers', icon: '🚛' },
+  { type: 'all',     label: 'All',      icon: '' },
+  { type: 'car',     label: 'Cars',     icon: '' },
+  { type: 'truck',   label: 'Trucks',   icon: '' },
+  { type: 'trailer', label: 'Trailers', icon: '' },
 ]
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
@@ -114,7 +114,7 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
               marginBottom: -1, display: 'flex', alignItems: 'center', gap: 5,
             }}
           >
-            <span>{t.icon}</span>
+            
             {t.label}
             <span style={{ fontSize: 11, background: vehicleTab === t.type ? '#E6F1FB' : '#F5F8FC', color: vehicleTab === t.type ? '#1A5FA8' : '#9aabc0', padding: '1px 7px', borderRadius: 20, fontWeight: 600 }}>
               {tabCounts[t.type]}
@@ -161,7 +161,7 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
               expiring_soon: { bg: '#FAEEDA', text: '#854F0B', label: `${v.daysUntilExpiry}d left` },
               expired:       { bg: '#FCEBEB', text: '#A32D2D', label: 'Expired' },
             }[v.status]
-            const typeIcon = { car: '🚗', truck: '🛻', trailer: '🚛' }[v.vehicle_type]
+            const typeIcon = ''
             const companyName = !activeCompanyId ? companies.find(c => c.id === (v as any).company_id)?.name : null
 
             return (

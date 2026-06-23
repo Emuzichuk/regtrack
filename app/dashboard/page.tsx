@@ -40,13 +40,13 @@ export default async function DashboardPage() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
         {[
-          { label: 'Cars', value: summary.cars, icon: '🚗', href: '/dashboard/vehicles?type=car' },
-          { label: 'Trucks', value: summary.trucks, icon: '🛻', href: '/dashboard/vehicles?type=truck' },
+          { label: 'Cars', value: summary.cars, icon: '', href: '/dashboard/vehicles?type=car' },
+          { label: 'Trucks', value: summary.trucks, icon: '', href: '/dashboard/vehicles?type=truck' },
           { label: 'Trailers', value: summary.trailers, icon: '🚛', href: '/dashboard/vehicles?type=trailer' },
         ].map(item => (
           <Link key={item.label} href={item.href} style={{ textDecoration: 'none' }}>
             <div style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <span style={{ fontSize: 24 }}>{item.icon}</span>
+              
               <div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: '#0C2340' }}>{item.value}</div>
                 <div style={{ fontSize: 12, color: '#6b7c93' }}>{item.label}</div>
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
 
       {summary.total === 0 && (
         <div style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '48px 24px', textAlign: 'center' as const }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }}>🚗</div>
+          
           <div style={{ fontSize: 16, fontWeight: 600, color: '#0C2340', marginBottom: 8 }}>No vehicles yet</div>
           <div style={{ fontSize: 14, color: '#6b7c93', marginBottom: 24 }}>Add your first vehicle to start tracking registrations.</div>
           <Link href="/dashboard/vehicles" style={{ background: '#0C2340', color: 'white', padding: '10px 24px', borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>

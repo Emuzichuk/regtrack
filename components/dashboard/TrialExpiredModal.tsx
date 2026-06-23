@@ -47,7 +47,7 @@ export default function TrialExpiredModal({ isExpired }: Props) {
         >×</button>
 
         {/* Icon */}
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+        <div style={{ width: 56, height: 56, borderRadius: 14, background: "#EEF4FB", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A5FA8" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
 
         <h2 style={{ fontSize: 22, fontWeight: 700, color: '#0C2340', margin: '0 0 10px' }}>
           Your free trial has ended

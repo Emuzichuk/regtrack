@@ -107,7 +107,7 @@ export default function AddVehicleModal({ userId, defaultType, companies = [], a
         {/* Vehicle type */}
         {FIELD('Vehicle type', 'type', (
           <div style={{ display: 'flex', gap: 8 }}>
-            {([['car', '🚗 Car'], ['truck', '🛻 Truck'], ['trailer', '🚛 Trailer']] as [VehicleType, string][]).map(([val, lbl]) => (
+            {([['car', 'Car'], ['truck', 'Truck'], ['trailer', 'Trailer']] as [VehicleType, string][]).map(([val, lbl]) => (
               <button key={val} onClick={() => setType(val)} style={{ flex: 1, padding: '8px', borderRadius: 8, border: `1.5px solid ${type === val ? '#0C2340' : 'rgba(20,60,120,0.15)'}`, background: type === val ? '#EEF4FB' : 'white', fontSize: 13, fontWeight: 500, color: type === val ? '#0C2340' : '#6b7c93', cursor: 'pointer' }}>
                 {lbl}
               </button>
