@@ -1,14 +1,16 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
   await supabase.auth.signOut()
-  return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APP_URL || 'https://trackregistration.com'))
+  const response = NextResponse.redirect(new URL('/', request.url))
+  return response
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
   await supabase.auth.signOut()
-  return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APP_URL || 'https://trackregistration.com'))
+  const response = NextResponse.redirect(new URL('/', request.url))
+  return response
 }

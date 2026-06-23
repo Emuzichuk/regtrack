@@ -12,16 +12,17 @@ function UpdatePasswordForm() {
   const searchParams = useSearchParams()
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
-  const [verifying, setVerifying] = useState(true)
+  const [ready, setReady] = useState(false)
   const [form, setForm] = useState({ password: '', confirm: '' })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    async function verifyToken() {
+    async function init() {
       const token_hash = searchParams.get('token_hash')
       const type = searchParams.get('type')
 
       if (token_hash && type === 'recovery') {
+        // Verify the OTP to establish a recovery session
         const { error } = await supabase.auth.verifyOtp({
           token_hash,
           type: 'recovery',
@@ -31,11 +32,21 @@ function UpdatePasswordForm() {
           router.push('/auth/reset-password')
           return
         }
+        setReady(true)
+        return
       }
-      setVerifying(false)
+
+      // Check if already in a recovery session (came via callback)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setReady(true)
+      } else {
+        toast.error('No valid reset session. Please request a new reset link.')
+        router.push('/auth/reset-password')
+      }
     }
-    verifyToken()
-  }, [searchParams])
+    init()
+  }, [])
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(f => ({ ...f, [field]: e.target.value }))
@@ -61,15 +72,18 @@ function UpdatePasswordForm() {
       return
     }
 
+    // Sign out after password change so they log in fresh
     await supabase.auth.signOut()
-    toast.success('Password updated! Please sign in.')
+    toast.success('Password updated successfully!')
     router.push('/auth/login?message=password-updated')
   }
 
-  if (verifying) {
+  if (!ready) {
     return (
-      <AuthCard title="Verifying..." subtitle="Please wait while we verify your reset link.">
-        <div style={{ textAlign: 'center', padding: '20px 0', color: '#9aabc0' }}>Verifying your reset link...</div>
+      <AuthCard title="Verifying..." subtitle="Please wait.">
+        <div style={{ textAlign: 'center', padding: '20px 0', color: '#9aabc0', fontSize: 14 }}>
+          Verifying your reset link...
+        </div>
       </AuthCard>
     )
   }
@@ -77,8 +91,18 @@ function UpdatePasswordForm() {
   return (
     <AuthCard title="Set a new password" subtitle="Choose a strong password for your RegTrack account.">
       <form onSubmit={handleSubmit}>
-        <FormField label="New password" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Min. 8 characters" autoComplete="new-password" required error={errors.password} />
-        <FormField label="Confirm new password" id="confirm" type="password" value={form.confirm} onChange={set('confirm')} placeholder="Re-enter new password" autoComplete="new-password" required error={errors.confirm} />
+        <FormField
+          label="New password" id="password" type="password"
+          value={form.password} onChange={set('password')}
+          placeholder="Min. 8 characters" autoComplete="new-password"
+          required error={errors.password}
+        />
+        <FormField
+          label="Confirm new password" id="confirm" type="password"
+          value={form.confirm} onChange={set('confirm')}
+          placeholder="Re-enter new password" autoComplete="new-password"
+          required error={errors.confirm}
+        />
         <SubmitButton loading={loading} label="Update password" loadingLabel="Updating..." />
       </form>
     </AuthCard>

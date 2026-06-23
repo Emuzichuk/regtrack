@@ -109,6 +109,16 @@ export default function DashboardNav({ profile, companies, activeCompanyId }: Pr
           Overview
         </Link>
 
+        {/* Settings link */}
+        <Link href="/dashboard/settings" style={{
+          textDecoration: "none", fontSize: 14, fontWeight: 500,
+          padding: "6px 12px", borderRadius: 7,
+          color: pathname === "/dashboard/settings" ? "#0C2340" : "#6b7c93",
+          background: pathname === "/dashboard/settings" ? "#EEF4FB" : "transparent",
+        }}>
+          Settings
+        </Link>
+
         {/* Fleet dropdown */}
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <button
@@ -222,11 +232,17 @@ export default function DashboardNav({ profile, companies, activeCompanyId }: Pr
         <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 600, color: '#1A5FA8' }}>
           {(profile?.full_name || profile?.email || '?')[0].toUpperCase()}
         </div>
-        <form action="/auth/signout" method="post">
-          <button type="submit" style={{ fontSize: 13, color: '#6b7c93', background: 'none', border: '1px solid rgba(20,60,120,0.15)', padding: '6px 12px', borderRadius: 7, cursor: 'pointer' }}>
-            Sign out
-          </button>
-        </form>
+        <button
+          onClick={async () => {
+            const { createClient } = await import('@/lib/supabase/client')
+            const supabase = createClient()
+            await supabase.auth.signOut()
+            window.location.href = '/'
+          }}
+          style={{ fontSize: 13, color: '#6b7c93', background: 'none', border: '1px solid rgba(20,60,120,0.15)', padding: '6px 12px', borderRadius: 7, cursor: 'pointer' }}
+        >
+          Sign out
+        </button>
       </div>
     </nav>
   )
