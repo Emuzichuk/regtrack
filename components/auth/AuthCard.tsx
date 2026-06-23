@@ -1,87 +1,78 @@
 'use client'
 import Link from 'next/link'
 
-interface AuthCardProps {
-  title: string
-  subtitle: string
-  children: React.ReactNode
-}
+const Logo = () => (
+  <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+    <div style={{ width: 26, height: 26, background: '#0A1628', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+        <rect x="1" y="1" width="5" height="5" rx="1" fill="white"/>
+        <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity="0.5"/>
+        <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity="0.5"/>
+        <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity="0.2"/>
+      </svg>
+    </div>
+    <span style={{ fontWeight: 600, fontSize: 14, letterSpacing: '-0.02em', color: '#0A1628' }}>RegTrack</span>
+  </Link>
+)
 
-export default function AuthCard({ title, subtitle, children }: AuthCardProps) {
+export default function AuthCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#F5F7FA',
-      display: 'flex',
-      fontFamily: 'Inter, system-ui, sans-serif',
-    }}>
-      {/* Left panel */}
-      <div style={{
-        width: '42%',
-        minWidth: 380,
-        background: '#0C2340',
-        padding: '48px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}>
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
-              <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white" opacity="0.95"/>
-              <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity="0.6"/>
-              <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity="0.6"/>
-              <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity="0.25"/>
-            </svg>
-          </div>
-          <span style={{ fontSize: 18, fontWeight: 700, color: 'white', letterSpacing: '-0.02em' }}>RegTrack</span>
-        </Link>
+    <div style={{ minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif", display: 'flex' }}>
 
-        <div>
-          <h2 style={{ fontSize: 28, fontWeight: 800, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.15, margin: '0 0 16px' }}>
-            Fleet registration<br />made effortless.
-          </h2>
-          <p style={{ fontSize: 15, color: '#7A9AB8', lineHeight: 1.7, margin: '0 0 40px' }}>
-            Track every vehicle, get automatic renewal reminders, and manage multiple companies — all in one place.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {[
-              ['Automatic email reminders', '30, 14, and 7-day alerts before registrations expire'],
-              ['VIN auto-fill', 'Year, make, and model filled in automatically'],
-              ['Cars, trucks & trailers', 'Separate tracking for every vehicle type'],
-            ].map(([title, desc]) => (
-              <div key={title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(46,125,209,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      {/* Left — dark panel */}
+      <div style={{ width: '44%', minWidth: 360, background: '#0A1628', display: 'flex', flexDirection: 'column', padding: '40px 48px', position: 'relative', overflow: 'hidden' }}>
+        {/* Subtle grid lines */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '48px 48px', pointerEvents: 'none' }} />
+
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Logo />
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 60 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 20 }}>Fleet Registration Management</p>
+            <h2 style={{ fontSize: 32, fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 20 }}>
+              Keep every<br />registration current.
+            </h2>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, fontWeight: 300, marginBottom: 48, maxWidth: 320 }}>
+              Automatic email reminders, VIN lookup, and fleet management for DMV professionals.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+              {[
+                ['Email reminders', '30, 14, and 7-day alerts before expiry'],
+                ['VIN auto-fill', 'Year, make, and model from VIN'],
+                ['Multiple companies', 'Manage multiple clients in one account'],
+              ].map(([title, desc], i) => (
+                <div key={title} style={{ padding: '18px 0', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20 }}>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '-0.01em' }}>{title}</span>
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontWeight: 300, textAlign: 'right' }}>{desc}</span>
                 </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'white', marginBottom: 2, letterSpacing: '-0.01em' }}>{title}</div>
-                  <div style={{ fontSize: 12, color: '#5A7A96', lineHeight: 1.5 }}>{desc}</div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', marginTop: 40 }}>© 2025 RegTrack</div>
+        </div>
+      </div>
+
+      {/* Right — form */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#FAFAFA' }}>
+        {/* Top bar */}
+        <div style={{ padding: '24px 48px', borderBottom: '1px solid #E2E5EA', display: 'flex', justifyContent: 'flex-end', background: 'white' }}>
+          <div style={{ fontSize: 13, color: '#6B7280' }}>
+            Need help?{' '}
+            <Link href="/" style={{ color: '#0A1628', fontWeight: 500, textDecoration: 'none' }}>Back to home</Link>
           </div>
         </div>
 
-        <div style={{ fontSize: 12, color: '#2A4A64' }}>© 2025 RegTrack</div>
-      </div>
-
-      {/* Right panel */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '48px 40px',
-      }}>
-        <div style={{ width: '100%', maxWidth: 420 }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#080F1A', margin: '0 0 8px', letterSpacing: '-0.03em' }}>
-            {title}
-          </h1>
-          <p style={{ fontSize: 15, color: '#6B8099', margin: '0 0 32px', lineHeight: 1.5 }}>
-            {subtitle}
-          </p>
-          {children}
+        {/* Form area */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
+          <div style={{ width: '100%', maxWidth: 400 }}>
+            <div style={{ marginBottom: 36 }}>
+              <h1 style={{ fontSize: 26, fontWeight: 700, color: '#0A1628', letterSpacing: '-0.03em', marginBottom: 8, lineHeight: 1.2 }}>{title}</h1>
+              <p style={{ fontSize: 14, color: '#6B7280', fontWeight: 300, lineHeight: 1.5 }}>{subtitle}</p>
+            </div>
+            {children}
+          </div>
         </div>
       </div>
     </div>

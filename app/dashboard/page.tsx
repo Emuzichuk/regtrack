@@ -15,79 +15,83 @@ export default async function DashboardPage() {
   const vehicles = enrichVehicles((rawVehicles || []) as Vehicle[])
   const summary = getFleetSummary(vehicles)
   const firstName = profile?.full_name?.split(' ')[0] || 'there'
-  const urgent = vehicles.filter(v => v.status !== 'current').slice(0, 3)
+  const urgent = vehicles.filter(v => v.status !== 'current').slice(0, 5)
+
+  const S = { fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#9CA3AF' }
 
   return (
-    <div>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 600, color: '#0C2340', margin: '0 0 4px' }}>Welcome back, {firstName}</h1>
-        <p style={{ fontSize: 14, color: '#6b7c93', margin: 0 }}>Here's your fleet at a glance.</p>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 32px' }}>
+
+      {/* Page header */}
+      <div style={{ borderBottom: '1px solid #E2E5EA', paddingBottom: 32, marginBottom: 40 }}>
+        <p style={S}>Overview</p>
+        <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0A1628', letterSpacing: '-0.03em', marginTop: 6 }}>
+          Good to see you, {firstName}.
+        </h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 28 }}>
+      {/* Stats grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, border: '1px solid #E2E5EA', marginBottom: 40 }}>
         {[
-          { label: 'Total vehicles', value: summary.total, color: '#0C2340' },
-          { label: 'Current', value: summary.current, color: '#3B6D11' },
-          { label: 'Expiring soon', value: summary.expiringSoon, color: '#854F0B' },
-          { label: 'Expired', value: summary.expired, color: '#A32D2D' },
-        ].map(card => (
-          <div key={card.label} style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '18px 20px' }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#9aabc0', textTransform: 'uppercase' as const, letterSpacing: '0.05em', marginBottom: 8 }}>{card.label}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, color: card.color }}>{card.value}</div>
+          { label: 'Total vehicles', value: summary.total, color: '#0A1628' },
+          { label: 'Current', value: summary.current, color: '#15803D' },
+          { label: 'Expiring soon', value: summary.expiringSoon, color: '#B45309' },
+          { label: 'Expired', value: summary.expired, color: '#B91C1C' },
+        ].map((s, i) => (
+          <div key={s.label} style={{ padding: '28px 24px', borderRight: i < 3 ? '1px solid #E2E5EA' : 'none' }}>
+            <p style={S}>{s.label}</p>
+            <p style={{ fontSize: 36, fontWeight: 700, letterSpacing: '-0.04em', color: s.color, marginTop: 8 }}>{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+      {/* Vehicle type row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0, border: '1px solid #E2E5EA', borderTop: 'none', marginBottom: 40 }}>
         {[
-          { label: 'Cars', value: summary.cars, icon: '', href: '/dashboard/vehicles?type=car' },
-          { label: 'Trucks', value: summary.trucks, icon: '', href: '/dashboard/vehicles?type=truck' },
-          { label: 'Trailers', value: summary.trailers, icon: '🚛', href: '/dashboard/vehicles?type=trailer' },
-        ].map(item => (
-          <Link key={item.label} href={item.href} style={{ textDecoration: 'none' }}>
-            <div style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
-              
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: '#0C2340' }}>{item.value}</div>
-                <div style={{ fontSize: 12, color: '#6b7c93' }}>{item.label}</div>
-              </div>
-            </div>
+          { label: 'Cars', value: summary.cars, href: '/dashboard/vehicles?type=car' },
+          { label: 'Trucks', value: summary.trucks, href: '/dashboard/vehicles?type=truck' },
+          { label: 'Trailers', value: summary.trailers, href: '/dashboard/vehicles?type=trailer' },
+        ].map((item, i) => (
+          <Link key={item.label} href={item.href} style={{ textDecoration: 'none', padding: '22px 24px', borderRight: i < 2 ? '1px solid #E2E5EA' : 'none', display: 'block', transition: 'background 0.1s' }}>
+            <p style={S}>{item.label}</p>
+            <p style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.03em', color: '#0A1628', marginTop: 6 }}>{item.value}</p>
           </Link>
         ))}
       </div>
 
+      {/* Needs attention */}
       {urgent.length > 0 && (
-        <div style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '20px 24px', marginBottom: 28 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#0C2340' }}>Needs attention</div>
-            <Link href="/dashboard/vehicles" style={{ fontSize: 13, color: '#1A5FA8', textDecoration: 'none' }}>View all →</Link>
+        <div style={{ border: '1px solid #E2E5EA' }}>
+          <div style={{ padding: '20px 24px', borderBottom: '1px solid #E2E5EA', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={S}>Needs attention</p>
+            <Link href="/dashboard/vehicles" style={{ fontSize: 12, color: '#6B7280', textDecoration: 'none' }}>View all →</Link>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {urgent.map(v => {
-              const colors = v.status === 'expired' ? { bg: '#FCEBEB', text: '#A32D2D' } : { bg: '#FAEEDA', text: '#854F0B' }
-              const name = [v.year, v.make, v.model].filter(Boolean).join(' ') || `Fleet #${v.fleet_number}`
-              const label = v.status === 'expired' ? `Expired ${Math.abs(v.daysUntilExpiry)}d ago` : `${v.daysUntilExpiry} days left`
-              return (
-                <div key={v.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#F5F8FC', borderRadius: 8 }}>
-                  <div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#0C2340' }}>Fleet #{v.fleet_number}</span>
-                    <span style={{ fontSize: 13, color: '#6b7c93', marginLeft: 8 }}>{name}</span>
-                  </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, background: colors.bg, color: colors.text }}>{label}</span>
+          {urgent.map((v, i) => {
+            const name = [v.year, v.make, v.model].filter(Boolean).join(' ') || `Fleet #${v.fleet_number}`
+            const isExp = v.status === 'expired'
+            const label = isExp ? `Expired ${Math.abs(v.daysUntilExpiry)}d ago` : `${v.daysUntilExpiry} days left`
+            return (
+              <div key={v.id} style={{ padding: '16px 24px', borderBottom: i < urgent.length - 1 ? '1px solid #E2E5EA' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: '#9CA3AF', fontFamily: 'monospace' }}>#{v.fleet_number}</span>
+                  <span style={{ fontSize: 13, color: '#0A1628', fontWeight: 500 }}>{name}</span>
+                  <span style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'capitalize' }}>{v.vehicle_type}</span>
                 </div>
-              )
-            })}
-          </div>
+                <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 4, background: isExp ? '#FEF2F2' : '#FFFBEB', color: isExp ? '#B91C1C' : '#B45309', letterSpacing: '0.02em' }}>
+                  {label}
+                </span>
+              </div>
+            )
+          })}
         </div>
       )}
 
+      {/* Empty state */}
       {summary.total === 0 && (
-        <div style={{ background: 'white', border: '0.5px solid rgba(20,60,120,0.12)', borderRadius: 12, padding: '48px 24px', textAlign: 'center' as const }}>
-          
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#0C2340', marginBottom: 8 }}>No vehicles yet</div>
-          <div style={{ fontSize: 14, color: '#6b7c93', marginBottom: 24 }}>Add your first vehicle to start tracking registrations.</div>
-          <Link href="/dashboard/vehicles" style={{ background: '#0C2340', color: 'white', padding: '10px 24px', borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>
-            Add your first vehicle →
+        <div style={{ border: '1px solid #E2E5EA', padding: '64px 32px', textAlign: 'center' }}>
+          <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 20, fontWeight: 300 }}>No vehicles yet. Add your first vehicle to start tracking registrations.</p>
+          <Link href="/dashboard/vehicles" style={{ fontSize: 13, fontWeight: 600, background: '#0A1628', color: 'white', padding: '10px 20px', borderRadius: 8, textDecoration: 'none', display: 'inline-block' }}>
+            Add your first vehicle
           </Link>
         </div>
       )}

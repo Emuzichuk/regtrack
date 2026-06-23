@@ -15,28 +15,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
     supabase.from('companies').select('id, name').eq('user_id', user.id).order('name'),
   ])
 
-  // Start trial if not started yet
   if (profile && !profile.trial_started_at) {
     await supabase.from('profiles').update({ trial_started_at: new Date().toISOString() }).eq('id', user.id)
   }
 
-  const trialExpired = isTrialExpired(
-    profile?.trial_started_at || null,
-    profile?.plan || 'none',
-    profile?.plan_status || 'inactive'
-  )
+  const trialExpired = isTrialExpired(profile?.trial_started_at || null, profile?.plan || 'none', profile?.plan_status || 'inactive')
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F5F8FC', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', fontFamily: "'Inter', system-ui, sans-serif", color: '#0A1628' }}>
       <DashboardNav profile={profile} companies={companies || []} activeCompanyId={null} />
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
-        <TrialBanner
-          trialStartedAt={profile?.trial_started_at || null}
-          plan={profile?.plan || 'none'}
-          planStatus={profile?.plan_status || 'inactive'}
-        />
-        {children}
-      </main>
+      <TrialBanner trialStartedAt={profile?.trial_started_at || null} plan={profile?.plan || 'none'} planStatus={profile?.plan_status || 'inactive'} />
+      <main>{children}</main>
       <TrialExpiredModal isExpired={trialExpired} />
     </div>
   )

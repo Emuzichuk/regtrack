@@ -2,100 +2,44 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-interface Props {
-  isExpired: boolean
-}
-
-export default function TrialExpiredModal({ isExpired }: Props) {
+export default function TrialExpiredModal({ isExpired }: { isExpired: boolean }) {
   const [dismissed, setDismissed] = useState(false)
   const router = useRouter()
-
   if (!isExpired || dismissed) return null
 
   return (
     <>
-      {/* Overlay — blocks all clicks */}
-      <div style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(12, 35, 64, 0.7)',
-        zIndex: 200,
-        backdropFilter: 'blur(2px)',
-      }} />
-
-      {/* Modal */}
-      <div style={{
-        position: 'fixed',
-        top: '50%', left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 201,
-        background: 'white',
-        borderRadius: 16,
-        padding: '40px 36px',
-        width: '100%',
-        maxWidth: 480,
-        textAlign: 'center',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-      }}>
-        {/* X button — only way to dismiss */}
-        <button
-          onClick={() => setDismissed(true)}
-          style={{
-            position: 'absolute', top: 16, right: 16,
-            background: 'none', border: 'none', fontSize: 20,
-            color: '#9aabc0', cursor: 'pointer', lineHeight: 1,
-          }}
-        >×</button>
-
-        {/* Icon */}
-        <div style={{ width: 56, height: 56, borderRadius: 14, background: "#EEF4FB", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A5FA8" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#0C2340', margin: '0 0 10px' }}>
-          Your free trial has ended
-        </h2>
-        <p style={{ fontSize: 15, color: '#6b7c93', lineHeight: 1.6, margin: '0 0 28px' }}>
-          Subscribe to continue managing your fleet and receiving email reminders. Plans start at just <strong>$5/month</strong>.
-        </p>
-
-        {/* Plan buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-          <button
-            onClick={() => router.push('/dashboard/billing')}
-            style={{
-              padding: '14px', border: '1.5px solid #0C2340', borderRadius: 10,
-              background: 'white', cursor: 'pointer',
-            }}
-          >
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#0C2340' }}>Basic</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#1A5FA8', margin: '4px 0 2px' }}>$5<span style={{ fontSize: 13, fontWeight: 400, color: '#9aabc0' }}>/mo</span></div>
-            <div style={{ fontSize: 12, color: '#6b7c93' }}>Up to 5 vehicles</div>
-          </button>
-          <button
-            onClick={() => router.push('/dashboard/billing')}
-            style={{
-              padding: '14px', border: '2px solid #2E7DD1', borderRadius: 10,
-              background: '#EEF4FB', cursor: 'pointer', position: 'relative',
-            }}
-          >
-            <div style={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', background: '#2E7DD1', color: 'white', fontSize: 10, fontWeight: 700, padding: '2px 10px', borderRadius: 20 }}>POPULAR</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#0C2340' }}>Pro</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#1A5FA8', margin: '4px 0 2px' }}>$10<span style={{ fontSize: 13, fontWeight: 400, color: '#9aabc0' }}>/mo</span></div>
-            <div style={{ fontSize: 12, color: '#6b7c93' }}>Unlimited vehicles</div>
-          </button>
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(10,22,40,0.6)', zIndex: 200 }} />
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 201, background: 'white', width: '100%', maxWidth: 480, border: '1px solid #E2E5EA' }}>
+        {/* Header */}
+        <div style={{ padding: '24px 28px', borderBottom: '1px solid #E2E5EA', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', color: '#9CA3AF', textTransform: 'uppercase', marginBottom: 4 }}>Free trial ended</p>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: '#0A1628', letterSpacing: '-0.03em' }}>Choose a plan to continue</h2>
+          </div>
+          <button onClick={() => setDismissed(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF', fontSize: 20, lineHeight: 1, padding: 4 }}>×</button>
         </div>
 
-        <button
-          onClick={() => router.push('/dashboard/billing')}
-          style={{
-            width: '100%', padding: '14px', background: '#0C2340', color: 'white',
-            border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 600, cursor: 'pointer',
-          }}
-        >
-          Choose a plan →
-        </button>
+        {/* Plans */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+          {[
+            { name: 'Basic', price: '$5', desc: 'Up to 5 vehicles', accent: false },
+            { name: 'Pro', price: '$10', desc: 'Unlimited vehicles', accent: true },
+          ].map((p, i) => (
+            <div key={p.name} style={{ padding: '28px', borderRight: i === 0 ? '1px solid #E2E5EA' : 'none', background: p.accent ? '#0A1628' : 'white' }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: p.accent ? 'rgba(255,255,255,0.5)' : '#6B7280', marginBottom: 10 }}>{p.name}</div>
+              <div style={{ fontSize: 36, fontWeight: 700, color: p.accent ? 'white' : '#0A1628', letterSpacing: '-0.04em', marginBottom: 4 }}>{p.price}<span style={{ fontSize: 13, fontWeight: 400, color: p.accent ? 'rgba(255,255,255,0.3)' : '#9CA3AF' }}>/mo</span></div>
+              <div style={{ fontSize: 12, color: p.accent ? 'rgba(255,255,255,0.4)' : '#6B7280', marginBottom: 20, fontWeight: 300 }}>{p.desc}</div>
+              <button onClick={() => router.push('/dashboard/billing')} style={{ width: '100%', padding: '10px', border: 'none', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', background: p.accent ? 'white' : '#0A1628', color: p.accent ? '#0A1628' : 'white', fontFamily: 'inherit' }}>
+                Choose {p.name}
+              </button>
+            </div>
+          ))}
+        </div>
 
-        <p style={{ fontSize: 12, color: '#9aabc0', marginTop: 14 }}>
-          Cancel anytime. No contracts.
-        </p>
+        <div style={{ padding: '16px 28px', borderTop: '1px solid #E2E5EA', textAlign: 'center' }}>
+          <p style={{ fontSize: 11, color: '#9CA3AF' }}>Secure payments via Stripe. Cancel anytime.</p>
+        </div>
       </div>
     </>
   )
