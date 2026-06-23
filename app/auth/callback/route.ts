@@ -22,18 +22,24 @@ export async function GET(request: NextRequest) {
     }
   )
 
-  // Handle PKCE flow (code)
+  // Handle PKCE flow (code) - used for password reset
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      if (type === 'recovery') {
+      // Always go to next param if provided, otherwise check session type
+      if (next !== '/dashboard') {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+      // Check if this was a recovery session
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user?.recovery_sent_at || type === 'recovery') {
         return NextResponse.redirect(`${origin}/auth/update-password`)
       }
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}/dashboard`)
     }
   }
 
-  // Handle token_hash flow (email links)
+  // Handle token_hash flow
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as any })
     if (!error) {
