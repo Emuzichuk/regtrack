@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import type { VehicleWithStatus, VehicleType } from '@/types'
 import AddVehicleModal from '@/components/vehicles/AddVehicleModal'
@@ -62,7 +63,12 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
     })
   }, [vehicles, tab, sort])
 
-  const counts = { all: vehicles.length, car: vehicles.filter(v => v.vehicle_type === 'car').length, truck: vehicles.filter(v => v.vehicle_type === 'truck').length, trailer: vehicles.filter(v => v.vehicle_type === 'trailer').length }
+  const counts = {
+    all: vehicles.length,
+    car: vehicles.filter(v => v.vehicle_type === 'car').length,
+    truck: vehicles.filter(v => v.vehicle_type === 'truck').length,
+    trailer: vehicles.filter(v => v.vehicle_type === 'trailer').length,
+  }
 
   async function del(id: string) {
     if (!confirm('Remove this vehicle?')) return
@@ -76,7 +82,7 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 32px' }}>
 
       {/* Header */}
-      <div style={{ borderBottom: '1px solid #E2E5EA', paddingBottom: 32, marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <div style={{ borderBottom: '1px solid #E2E5EA', paddingBottom: 32, marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <p style={S}>Fleet</p>
           <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0A1628', letterSpacing: '-0.03em', marginTop: 6 }}>
@@ -94,8 +100,8 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
         <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid #E2E5EA' }}>
           {TABS.map(t => (
             <button key={t.type} onClick={() => setTab(t.type)} style={{
-              fontSize: 13, fontWeight: 500, padding: '8px 16px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              color: tab === t.type ? '#0A1628' : '#6B7280',
+              fontSize: 13, fontWeight: 500, padding: '8px 16px', border: 'none', background: 'none',
+              cursor: 'pointer', fontFamily: 'inherit', color: tab === t.type ? '#0A1628' : '#6B7280',
               borderBottom: tab === t.type ? '2px solid #0A1628' : '2px solid transparent',
               marginBottom: -1, display: 'flex', alignItems: 'center', gap: 7,
             }}>
@@ -125,25 +131,32 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
       ) : (
         <div style={{ border: '1px solid #E2E5EA' }}>
           {/* Table head */}
-          <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 120px 130px 130px 160px', padding: '10px 20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA' }}>
-            {['Fleet #', 'Vehicle', 'Type', 'Plate', 'Expires', 'Status', 'Actions'].map(h => (
+          <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr 90px 100px 110px 120px 110px 180px', padding: '10px 20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA' }}>
+            {['Fleet #', 'Vehicle', 'Type', 'Driver', 'Plate', 'Expires', 'Status', 'Actions'].map(h => (
               <div key={h} style={S}>{h}</div>
             ))}
           </div>
 
           {filtered.map((v, i) => {
             const name = [v.year, v.make, v.model].filter(Boolean).join(' ') || (v.trailer_type || '—')
-            const sc = { current: { bg: '#F0FDF4', text: '#15803D', label: 'Current' }, expiring_soon: { bg: '#FFFBEB', text: '#B45309', label: `${v.daysUntilExpiry}d left` }, expired: { bg: '#FEF2F2', text: '#B91C1C', label: 'Expired' } }[v.status]
+            const sc = {
+              current: { bg: '#F0FDF4', text: '#15803D', label: 'Current' },
+              expiring_soon: { bg: '#FFFBEB', text: '#B45309', label: `${v.daysUntilExpiry}d left` },
+              expired: { bg: '#FEF2F2', text: '#B91C1C', label: 'Expired' },
+            }[v.status]
             const companyName = !activeCompanyId ? companies.find(c => c.id === (v as any).company_id)?.name : null
 
             return (
-              <div key={v.id} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px 120px 130px 130px 160px', padding: '14px 20px', borderBottom: i < filtered.length - 1 ? '1px solid #E2E5EA' : 'none', alignItems: 'center' }}>
+              <div key={v.id} style={{ display: 'grid', gridTemplateColumns: '70px 1fr 90px 100px 110px 120px 110px 180px', padding: '13px 20px', borderBottom: i < filtered.length - 1 ? '1px solid #E2E5EA' : 'none', alignItems: 'center' }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#9CA3AF', fontFamily: 'monospace' }}>#{v.fleet_number}</div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 500, color: '#0A1628', letterSpacing: '-0.01em' }}>{name}</div>
-                  {companyName && <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>{companyName}</div>}
+                  {companyName && <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1 }}>{companyName}</div>}
                 </div>
                 <div style={{ fontSize: 12, color: '#6B7280', textTransform: 'capitalize' }}>{v.vehicle_type}</div>
+                <div style={{ fontSize: 12, color: '#6B7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {(v as any).driver_name || <span style={{ color: '#D1D5DB' }}>—</span>}
+                </div>
                 <div style={{ fontSize: 12, color: '#6B7280', fontFamily: 'monospace' }}>{v.license_plate || '—'}</div>
                 <div style={{ fontSize: 12, color: '#374151' }}>
                   {new Date(v.registration_expiry + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -153,10 +166,11 @@ export default function FleetView({ vehicles, allVehicles, companies, activeComp
                     {sc.label}
                   </span>
                 </div>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  <button onClick={() => setStatusV(v)} style={{ fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 6, border: '1px solid #E2E5EA', background: 'white', color: '#374151', cursor: 'pointer', fontFamily: 'inherit' }}>Status</button>
-                  <button onClick={() => setEditV(v)} style={{ fontSize: 11, fontWeight: 500, padding: '5px 10px', borderRadius: 6, border: '1px solid #E2E5EA', background: 'white', color: '#374151', cursor: 'pointer', fontFamily: 'inherit' }}>Edit</button>
-                  <button onClick={() => del(v.id)} disabled={deletingId === v.id} style={{ fontSize: 11, fontWeight: 500, padding: '5px 10px', borderRadius: 6, border: '1px solid #FECACA', background: '#FEF2F2', color: '#B91C1C', cursor: 'pointer', fontFamily: 'inherit' }}>
+                <div style={{ display: 'flex', gap: 5 }}>
+                  <Link href={`/dashboard/vehicles/${v.id}`} style={{ fontSize: 11, fontWeight: 500, padding: '5px 9px', border: '1px solid #E2E5EA', borderRadius: 5, background: 'white', color: '#374151', textDecoration: 'none', display: 'inline-block' }}>View</Link>
+                  <button onClick={() => setStatusV(v)} style={{ fontSize: 11, fontWeight: 500, padding: '5px 9px', border: '1px solid #E2E5EA', borderRadius: 5, background: 'white', color: '#374151', cursor: 'pointer', fontFamily: 'inherit' }}>Status</button>
+                  <button onClick={() => setEditV(v)} style={{ fontSize: 11, fontWeight: 500, padding: '5px 9px', border: '1px solid #E2E5EA', borderRadius: 5, background: 'white', color: '#374151', cursor: 'pointer', fontFamily: 'inherit' }}>Edit</button>
+                  <button onClick={() => del(v.id)} disabled={deletingId === v.id} style={{ fontSize: 11, fontWeight: 500, padding: '5px 9px', border: '1px solid #FECACA', borderRadius: 5, background: '#FEF2F2', color: '#B91C1C', cursor: 'pointer', fontFamily: 'inherit' }}>
                     {deletingId === v.id ? '...' : 'Del'}
                   </button>
                 </div>
