@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -12,8 +12,10 @@ export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
+
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({ email: '', password: '' })
+  const [rememberMe, setRememberMe] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -37,14 +39,30 @@ export default function LoginForm() {
     e.preventDefault()
     if (!validate()) return
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    })
+
     if (error) {
-      if (error.message.includes('Email not confirmed')) toast.error('Please confirm your email before signing in.')
-      else if (error.message.includes('Invalid login')) setErrors({ password: 'Incorrect email or password.' })
-      else toast.error(error.message)
+      if (error.message.includes('Email not confirmed')) {
+        toast.error('Please confirm your email before signing in. Check your inbox.')
+      } else if (error.message.includes('Invalid login')) {
+        setErrors({ password: 'Incorrect email or password.' })
+      } else {
+        toast.error(error.message)
+      }
       setLoading(false)
       return
     }
+
+    if (!rememberMe) {
+      sessionStorage.setItem('regtrack-session-only', 'true')
+    } else {
+      localStorage.removeItem('regtrack-session-only')
+    }
+
     toast.success('Welcome back!')
     router.push('/dashboard')
     router.refresh()
@@ -53,18 +71,38 @@ export default function LoginForm() {
   return (
     <AuthCard title="Sign in to RegTrack" subtitle="Manage your fleet registrations and reminders.">
       <form onSubmit={handleSubmit}>
-        <FormField label="Email address" id="email" type="email" value={form.email} onChange={set('email')} placeholder="maria@example.com" autoComplete="email" required error={errors.email} />
-        <div style={{ marginBottom: 8 }}>
-          <FormField label="Password" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Your password" autoComplete="current-password" required error={errors.password} />
+        <FormField label="Email address" id="email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" autoComplete="email" required error={errors.email} />
+        <FormField label="Password" id="password" type="password" value={form.password} onChange={set('password')} placeholder="Your password" autoComplete="current-password" required error={errors.password} />
+
+        {/* Remember me + Forgot password */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, marginTop: -4 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => setRememberMe(!rememberMe)}>
+            <div style={{
+              width: 18, height: 18, borderRadius: 4,
+              border: `1.5px solid ${rememberMe ? '#0A1628' : '#D1D5DB'}`,
+              background: rememberMe ? '#0A1628' : 'white',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, transition: 'all 0.15s',
+            }}>
+              {rememberMe && (
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 5L4 7.5L8.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
+            <span style={{ fontSize: 13, color: '#374151', userSelect: 'none' as const }}>Keep me signed in</span>
+          </label>
+          <Link href="/auth/reset-password" style={{ fontSize: 13, color: '#6B7280', textDecoration: 'none' }}>
+            Forgot password?
+          </Link>
         </div>
-        <div style={{ textAlign: 'right', marginBottom: 20, marginTop: -8 }}>
-          <Link href="/auth/reset-password" style={{ fontSize: 13, color: 'var(--blue)', textDecoration: 'none' }}>Forgot password?</Link>
-        </div>
+
         <SubmitButton loading={loading} label="Sign in" loadingLabel="Signing in..." />
       </form>
-      <p style={{ textAlign: 'center', fontSize: 13, color: '#6b7c93', marginTop: 20 }}>
+
+      <p style={{ textAlign: 'center', fontSize: 13, color: '#6B7280', marginTop: 20 }}>
         Don't have an account?{' '}
-        <Link href="/auth/signup" style={{ color: 'var(--blue)', fontWeight: 500, textDecoration: 'none' }}>Create one free</Link>
+        <Link href="/auth/signup" style={{ color: '#0A1628', fontWeight: 600, textDecoration: 'none' }}>Start free trial</Link>
       </p>
     </AuthCard>
   )
