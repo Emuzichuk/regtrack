@@ -129,8 +129,8 @@ export default function VehicleDetail({ vehicle, documents: initialDocs, userId 
         <div>
           {/* Vehicle info */}
           <div style={{ border: '1px solid #E2E5EA', marginBottom: 24 }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA' }}>
-              <p style={S}>Vehicle information</p>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #0A1628', background: '#0A1628' }}>
+              <p style={{ ...S, color: 'white' }}>Vehicle information</p>
             </div>
             <div style={{ padding: '20px' }}>
               {[
@@ -162,8 +162,8 @@ export default function VehicleDetail({ vehicle, documents: initialDocs, userId 
 
           {/* Driver */}
           <div style={{ border: '1px solid #E2E5EA' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA' }}>
-              <p style={S}>Assigned driver</p>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #0A1628', background: '#0A1628' }}>
+              <p style={{ ...S, color: 'white' }}>Assigned driver</p>
             </div>
             <div style={{ padding: '20px' }}>
               <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 14, fontWeight: 300 }}>
@@ -197,13 +197,13 @@ export default function VehicleDetail({ vehicle, documents: initialDocs, userId 
         {/* Right column — Documents */}
         <div>
           <div style={{ border: '1px solid #E2E5EA' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p style={S}>Documents</p>
-              <span style={{ fontSize: 12, color: '#9CA3AF' }}>{docs.length} file{docs.length !== 1 ? 's' : ''}</span>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E5EA', background: '#0A1628', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p style={{ ...S, color: 'white' }}>Documents</p>
+              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{docs.length} file{docs.length !== 1 ? 's' : ''}</span>
             </div>
 
             {/* Upload area */}
-            <div style={{ padding: '20px', borderBottom: '1px solid #E2E5EA', background: '#FAFAFA' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid #E2E5EA', background: '#F7F8FA' }}>
               <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} style={{ display: 'none' }} id="file-upload" />
 
               {!selectedFile ? (
